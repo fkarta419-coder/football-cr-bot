@@ -6,11 +6,13 @@ from aiogram import Bot, Dispatcher
 from aiogram.filters import Command
 from aiogram.types import Message
 
+TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 
-TOKEN = os.getenv("8944917133:AAHzyZPUwfVahJEko0gOapBGh0nCxjcDcmY")
+print("TOKEN EXISTS:", bool(TOKEN))
+print("TOKEN LENGTH:", len(TOKEN) if TOKEN else 0)
 
 if not TOKEN:
-    raise RuntimeError("TELEGRAM_BOT_TOKEN not found")
+    raise RuntimeError("TOKEN IS EMPTY")
 
 
 bot = Bot(token=TOKEN)
