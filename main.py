@@ -1,6 +1,7 @@
 import os
 import random
 import asyncio
+import time
 
 from aiogram import Bot, Dispatcher
 from aiogram.filters import Command
@@ -137,10 +138,15 @@ PLAYERS = [
 
 games = {}
 
+ROUND_TIME = 30
+timers = {}
+
 
 def new_round(user_id):
     player = random.choice(PLAYERS)
     games[user_id] = player
+    timers[user_id] = time.time()
+    asyncio.create_task(timer_task(user_id))
     return player
 
 
@@ -170,6 +176,21 @@ async def new_game(message: Message):
 async def answer(message: Message):
     user_id = message.from_user.id
 
+        if user_id in timers:
+        elapsed = time.time() - timers[user_id]
+
+        if elapsed >= ROUND_TIME:
+            player = games[user_id]
+
+            await message.answer(
+                f"⏰ ВРЕМЯ ВЫШЛО!\n\n"
+                f"⚽ Правильный ответ: {player['name']}"
+            )
+
+            player = new_round(user_id)
+            await message.answer(question(player))
+            return
+
     if user_id not in games:
         await message.answer("❗ Напиши /start")
         return
@@ -188,6 +209,35 @@ async def answer(message: Message):
     else:
         await message.answer("❌ Неправильно! Попробуй ещё раз.")
 
+async def timer_task(user_id):
+    start_time = timers.get(user_id)
+
+    if start_time is None:
+        return
+
+    await asyncio.sleep(ROUND_TIME)
+
+    # Если игрок всё ещё находится в этом же раунде
+    if timers.get(user_id) == start_time:
+        player = games.get(user_id)
+
+        if player:
+            try:
+                await bot.send_message(
+                    user_id,
+                    f"⏰ ВРЕМЯ ВЫШЛО!\n\n"
+                    f"⚽ Правильный ответ: {player['name']}"
+                )
+
+                new_player = new_round(user_id)
+
+                await bot.send_message(
+                    user_id,
+                    question(new_player)
+                )
+
+            except Exception as e:
+                print(f"Timer error: {e}")д
 
 async def main():
     print("BOT STARTED")
