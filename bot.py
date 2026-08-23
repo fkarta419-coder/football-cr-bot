@@ -13,7 +13,7 @@ from aiogram.types import Message
 # TOKEN
 # =========================
 
-TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+TOKEN = os.getenv("8944917133:AAHzyZPUwfVahJEko0gOapBGh0nCxjcDcmY")
 
 if not TOKEN:
     raise RuntimeError("TELEGRAM_BOT_TOKEN не найден")
