@@ -1,4 +1,15 @@
-# players.py
+from players import PLAYERS
+
+@dp.message(Command("players"))
+async def players_command(message: Message):
+    text = "⚽ Игроки:\n\n"
+
+    for i, player in enumerate(PLAYERS, 1):
+        text += f"{i}. {player['name']} — {player['rating']} OVR\n"
+
+    await message.answer(text)
+
+
 
 PLAYERS = [
     {"name": "Ламин Ямаль", "nation": "Испания", "rating": 89},
