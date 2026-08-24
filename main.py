@@ -489,12 +489,23 @@ async def start(message: Message):
 async def kviz(message: Message):
     user_id = message.from_user.id
 
-    print(f"KVIZ: user={user_id}")
-
     register_user(
         user_id,
         message.from_user.username
     )
+
+    # Удаляем старый раунд
+    games.pop(user_id, None)
+    timers.pop(user_id, None)
+
+    # Создаём новый раунд
+    player = new_round(user_id)
+
+    await message.answer(
+        "🎮 НОВЫЙ РАУНД!\n\n"
+        + question(player)
+    )
+    
 
     # Проверяем подписку
     subscribed = await check_subscription(user_id)
