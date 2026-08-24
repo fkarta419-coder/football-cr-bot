@@ -137,7 +137,7 @@ PLAYERS = [
 
 games = {}
 timers = {}
-ROUND_TIME = 30
+ROUND_TIME = 300
 
 
 def new_round(user_id):
