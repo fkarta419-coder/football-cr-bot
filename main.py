@@ -487,27 +487,40 @@ async def start(message: Message):
 
 @dp.message(Command("kviz"))
 async def kviz(message: Message):
-
-    if not await require_subscription(message):
-        return
-
     user_id = message.from_user.id
+
+    print(f"KVIZ: user={user_id}")
 
     register_user(
         user_id,
         message.from_user.username
     )
 
+    # Проверяем подписку
+    subscribed = await check_subscription(user_id)
+
+    if not subscribed:
+        await message.answer(
+            "❌ Чтобы играть, сначала подпишись на канал!\n\n"
+            "📢 @LionelMessiG10AT",
+            reply_markup=subscribe_keyboard()
+        )
+        return
+
+    # Останавливаем старый раунд
     games.pop(user_id, None)
     timers.pop(user_id, None)
 
+    # Создаём новый раунд
     player = new_round(user_id)
+
+    print(f"KVIZ STARTED: {player['name']}")
 
     await message.answer(
         question(player)
     )
 
-
+    
 # =========================================================
 # NEW ROUND
 # =========================================================
