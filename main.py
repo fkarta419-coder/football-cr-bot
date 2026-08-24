@@ -485,7 +485,35 @@ async def start(message: Message):
 # KVIZ
 # =========================================================
 
-@dp.message(Command("kviz"))
+async def timer_task(user_id):
+    await asyncio.sleep(ROUND_TIME)
+
+    if user_id not in games:
+        return
+
+    start_time = timers.get(user_id)
+
+    if start_time is None:
+        return
+
+    if time.time() - start_time < ROUND_TIME:
+        return
+
+    player = games.pop(user_id, None)
+    timers.pop(user_id, None)
+
+    if player:
+        try:
+            await bot.send_message(
+                user_id,
+                "⏰ ВРЕМЯ ВЫШЛО!\n\n"
+                f"⚽ Это был: {player['name']}\n\n"
+                "🎮 Новый раунд: /kviz"
+            )
+        except Exception as e:
+            print(f"TIMER ERROR: {e}")
+
+dp.message(Command("kviz"))
 async def kviz(message: Message):
     user_id = message.from_user.id
 
@@ -504,7 +532,6 @@ async def kviz(message: Message):
     await message.answer(
         "🎮 НОВЫЙ РАУНД!\n\n"
         + question(player)
-    )
     
 
     # Проверяем подписку
