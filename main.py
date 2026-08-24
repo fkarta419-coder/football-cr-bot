@@ -176,7 +176,7 @@ async def new_game(message: Message):
 async def answer(message: Message):
     user_id = message.from_user.id
     
-    if user_id in timers
+    if user_id in timers:
          elapsed = time.time() - timers[user_id]
 
     if elapsed >= ROUND_TIME:
