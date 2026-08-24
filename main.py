@@ -180,7 +180,7 @@ async def answer(message: Message):
          elapsed = time.time() - timers[user_id]
 
     if elapsed >= ROUND_TIME:
-    щ player = games[user_id]
+      player = games[user_id]
 
             await message.answer(
                 f"⏰ ВРЕМЯ ВЫШЛО!\n\n"
