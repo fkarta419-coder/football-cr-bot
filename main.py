@@ -8,7 +8,7 @@ from aiogram.filters import Command
 from aiogram.types import Message
 
 
-TOKEN = os.environ.get("8944917133:AAHzyZPUwfVahJEko0gOapBGh0nCxjcDcmY")
+TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 
 print("TOKEN EXISTS:", bool(TOKEN))
 print("TOKEN LENGTH:", len(TOKEN) if TOKEN else 0)
