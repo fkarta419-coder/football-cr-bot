@@ -175,12 +175,12 @@ async def new_game(message: Message):
 @dp.message()
 async def answer(message: Message):
     user_id = message.from_user.id
+    
+    if user_id in timers
+         elapsed = time.time() - timers[user_id]
 
-        if user_id in timers:
-        elapsed = time.time() - timers[user_id]
-
-        if elapsed >= ROUND_TIME:
-            player = games[user_id]
+    if elapsed >= ROUND_TIME:
+    щ player = games[user_id]
 
             await message.answer(
                 f"⏰ ВРЕМЯ ВЫШЛО!\n\n"
