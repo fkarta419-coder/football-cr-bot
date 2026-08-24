@@ -656,3 +656,43 @@ async def top_users(message: Message):
 
 
 # ============
+
+from aiohttp import web
+
+
+async def health(request):
+    return web.Response(text="BOT IS RUNNING")
+
+
+async def start_web_server():
+    app = web.Application()
+
+    app.router.add_get("/", health)
+    app.router.add_get("/health", health)
+
+    port = int(os.environ.get("PORT", 10000))
+
+    runner = web.AppRunner(app)
+    await runner.setup()
+
+    site = web.TCPSite(
+        runner,
+        "0.0.0.0",
+        port
+    )
+
+    await site.start()
+
+    print(f"WEB SERVER STARTED: 0.0.0.0:{port}")
+
+
+async def main():
+    print("BOT STARTED")
+
+    await start_web_server()
+
+    await dp.start_polling(bot)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
