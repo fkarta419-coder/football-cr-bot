@@ -831,38 +831,27 @@ async def profile(message: Message):
 
 @dp.message(Command("top"))
 async def top_users(message: Message):
-
     if not await require_subscription(message):
         return
 
-    CURSOR.execute(
-        """
+    register_user(
+        message.from_user.id,
+        message.from_user.username
+    )
+
+    CURSOR.execute("""
         SELECT username, correct
         FROM users
-        ORDER BY correct DESC, user_id ASC
+        ORDER BY correct DESC
         LIMIT 10
-        """
-    )
+    """)
 
     rows = CURSOR.fetchall()
 
-    if not rows:
-
-        await message.answer(
-            "🏆 Рейтинг пока пуст."
-        )
-
-        return
-
     text = "🏆 ТОП-10 ИГРОКОВ\n\n"
 
-    for index, row in enumerate(
-        rows,
-        start=1
-    ):
-
-        username = row[0] or "Без имени"
-        correct = row[1]
+    for index, (username, correct) in enumerate(rows, 1):
+        username = username or "Без имени"
 
         if index == 1:
             medal = "🥇"
@@ -873,50 +862,12 @@ async def top_users(message: Message):
         else:
             medal = f"{index}."
 
-        text += (
-            f"{medal} {username} — "
-            f"✅ {correct}\n"
-        )
+        text += f"{medal} {username} — ✅ {correct}\n"
 
-    await message.answer(
-        text
-    )
+    if not rows:
+        text += "Пока никто не играл."
 
-
-# =========================================================
-# PLAYERS
-# =========================================================
-
-@dp.message(Command("players"))
-async def players_command(message: Message):
-
-    if not await require_subscription(message):
-        return
-
-    sorted_players = sorted(
-        PLAYERS,
-        key=lambda x: x["rating"],
-        reverse=True
-    )
-
-    text = "⭐ ТОП-10 ФУТБОЛИСТОВ\n\n"
-
-    for index, player in enumerate(
-        sorted_players[:10],
-        start=1
-    ):
-
-        text += (
-            f"{index}. "
-            f"{player['name']} — "
-            f"{player['rating']}\n"
-        )
-
-    await message.answer(
-        text
-    )
-
-
+    await message.answer(text)
 # =========================================================
 # HELP
 # =========================================================
